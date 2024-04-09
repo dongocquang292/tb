@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLU - Quản lý nhân viên</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td,
+    th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">TLU</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showHome()">Trang chủ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showEmployees()">Quản lý nhân viên</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4" id="content">
+        <!-- Nội dung sẽ được thay đổi tại đây -->
+    </div>
+
+
+
+    <script>
+        function showHome() {
+            document.getElementById('content').innerHTML = '<h1>Trang chủ</h1>';
+        }
+
+        function showEmployees() {
+            fetch('/employees')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('content').innerHTML = data;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+    <!-- Script để thêm nhân viên -->
+    <script>
+        function addEmployee() {
+            // Lấy dữ liệu từ form
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const address = document.getElementById('address').value;
+            const phone = document.getElementById('phone').value;
+
+            const formData = {
+                name: name,
+                email: email,
+                address: address,
+                phone: phone
+            };
+
+        if (!name || !email || !address || !phone) {
+            alert('Vui lòng nhập đầy đủ thông tin!');
+            return;
+        }
+        if (!isValidPhoneNumber(phone)) {
+            alert('Số điện thoại không hợp lệ!');
+            return;
+        }
+
+            // Thực hiện POST request bằng fetch
+            fetch('/employees/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Data sent:', data);
+                    // Đóng pop-up
+                    $('#addEmployeeModal').modal('hide');
+                    showEmployees()
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Xử lý lỗi nếu cần
+                });
+        }
+        function isValidPhoneNumber(phone) {
+        // Số điện thoại phải có 10 chữ số và chỉ chứa các ký tự số
+        return /^\d{10}$/.test(phone);
+    }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
