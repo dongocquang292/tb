@@ -5,17 +5,35 @@ const AddEmployeeModal = ({ show, onClose, onAddEmployee }) => {
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
     const [phone, setPhone] = useState('');
+    const [error, setError] = useState('');
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
         // Kiểm tra các trường không được rỗng
         if (!name || !email || !address || !phone) {
             alert('Vui lòng nhập đầy đủ thông tin!');
             return;
         }
 
+        e.preventDefault();
+        
+        // Kiểm tra các trường không được bỏ trống và số điện thoại có 10 số
+        if (!name || !email || !address || !phone) {
+            setError('Vui lòng nhập đầy đủ thông tin.');
+            return;
+        }
+
+        if (phone.length !== 10 || !/^\d+$/.test(phone)) {
+            setError('Số điện thoại phải có đúng 10 chữ số.');
+            return;
+        }
         // Gửi yêu cầu thêm nhân viên mới
         onAddEmployee({ name, email, address, phone });
-
+        // Reset form và xóa thông báo lỗi
+        setName('');
+        setEmail('');
+        setAddress('');
+        setPhone('');
+        setError('');
         // Đóng modal sau khi thêm nhân viên
         onClose();
     };
@@ -51,6 +69,7 @@ const AddEmployeeModal = ({ show, onClose, onAddEmployee }) => {
                         <button type="button" className="btn btn-primary" onClick={handleSubmit}>Thêm</button>
                         <button type="button" className="btn btn-secondary" onClick={onClose}>Hủy</button>
                     </div>
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
                 </div>
             </div>
         </div>

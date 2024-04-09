@@ -66,58 +66,6 @@ app.post('/employees/add', (req, res) => {
     res.json({ success: true, message: 'Nhân viên mới đã được thêm thành công!' });
 });
 
-app.post("/", (req, res) => {
-    const inputEmployeeId = employees.length + 1;
-    const inputEmployeeName = req.body.employeeName;
-    const inputEmployeePost = req.body.employeePost;
-    const inputEmployeeSalary = req.body.employeeSalary;
-
-    employees.push({
-        employeeId: inputEmployeeId,
-        employeeName: inputEmployeeName,
-        employeePost: inputEmployeePost,
-        employeeSalary: inputEmployeeSalary,
-    });
-
-    res.render("home", {
-        data: employees,
-    });
-});
-
-app.post("/delete", (req, res) => {
-    var requestedEmployeeId = req.body.employeeId;
-    var j = 0;
-    employees.forEach((employee) => {
-        j = j + 1;
-        if (employee.employeeId === requestedEmployeeId) {
-            employees.splice(j - 1, 1);
-        }
-    });
-    res.render("home", {
-        data: employees,
-    });
-});
-
-app.post("/update", (req, res) => {
-    const requestedEmployeeId = req.body.employeeId;
-    const inputEmployeeName = req.body.employeeName;
-    const inputEmployeePost = req.body.employeePost;
-    const inputEmployeeSalary = req.body.employeeSalary;
-
-    var j = 0;
-    employees.forEach((employee) => {
-        j = j + 1;
-        if (employee.employeeId == requestedEmployeeId) {
-            (employee.employeeName = inputEmployeeName),
-                (employee.employeePost = inputEmployeePost),
-                (employee.employeeSalary = inputEmployeeSalary);
-        }
-    });
-    res.render("home", {
-        data: employees,
-    });
-});
-
 app.listen(3001, (req, res) => {
     console.log("App is running on port 3001");
 }); 
